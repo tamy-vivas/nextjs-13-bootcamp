@@ -1,4 +1,4 @@
-import React from 'react'
+import Link from "next/link";
 
 export default function MenuPage() {
     return (
@@ -6,9 +6,9 @@ export default function MenuPage() {
             <main className="max-w-screen-2xl m-auto bg-white">
                 {/* NAVBAR */}
                 <nav className="bg-white p-2 flex justify-between">
-                    <a href="" className="font-bold text-gray-700 text-2xl">
-                        {" "} OpenTable{" "}
-                    </a>
+                    <Link href="" className="font-bold text-gray-700 text-2xl">
+                        OpenTable{" "}
+                    </Link>
                     <div>
                         <div className="flex">
                             <button
@@ -35,8 +35,8 @@ export default function MenuPage() {
                     <div className="bg-white w-[100%] rounded p-3 shadow">
                         {/* RESAURANT NAVBAR */}
                         <nav className="flex text-reg border-b pb-2">
-                            <a href="" className="mr-7"> Overview </a>
-                            <a href="" className="mr-7"> Menu </a>
+                            <Link href="/restaurant/milestone-grill" className="mr-7"> Overview </Link>
+                            <Link href="/restaurant/milestone-grill/menu" className="mr-7"> Menu </Link>
                         </nav>
                         {/* RESAURANT NAVBAR */} {/* MENU */}
                         <main className="bg-white mt-5">
