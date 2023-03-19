@@ -9,3 +9,56 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum PRICE {
+  CHEAP
+  REGULAR
+  EXPENSIVE
+}
+
+// 1 Restauran could have many items
+model Restaurant {
+  id          Int      @id @default(autoincrement())
+  name        String
+  main_image  String
+  images      String[]
+  description String
+  open_time   String
+  close_time  String
+  slug        String   @unique
+  price       PRICE
+  items       Item[]
+  location_id Int
+  location    Location @relation(fields: [location_id], references: [id])
+  cusine_id   Int
+  cusine      Cusine   @relation(fields: [cusine_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Item {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String
+  restaurant_id Int
+  restaurant    Restaurant @relation(fields: [restaurant_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Location {
+  id          Int          @id @default(autoincrement())
+  name        String
+  restaurants Restaurant[]
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+}
+
+model Cusine {
+  id          Int          @id @default(autoincrement())
+  name        String
+  restaurants Restaurant[]
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+}
