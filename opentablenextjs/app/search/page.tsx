@@ -3,15 +3,7 @@ import Header from './components/Header';
 import RestaurantCard from './components/RestaurantCard';
 import SearchSideBar from './components/SearchSideBar';
 
-interface RestaurantType {
-    id: number;
-    name: string;
-    main_image: string;
-    price: PRICE;
-    cuisine: Cuisine;
-    location: Location;
-    slug: string;
-}
+
 const prisma = new PrismaClient();
 
 const fetchRestaurantByCity = (city: string | undefined) => {
@@ -50,7 +42,14 @@ export default async function SearchPage({ searchParams }: { searchParams: { cit
             <div className="flex py-4 m-auto w-2/3 justify-between items-start">
                 <SearchSideBar />
                 <div className="w-5/6">
-                    {restaurants.length ? <RestaurantCard /> : <p>Sorry, we found no restaurants in this area</p>}
+                    {restaurants.length ?
+                        <>
+                            {
+                                restaurants.map(restaurant =>
+                                    (<RestaurantCard restaurant={restaurant} />)
+                                )
+                            }
+                        </> : <p>Sorry, we found no restaurants in this area</p>}
                 </div>
             </div>
         </>
