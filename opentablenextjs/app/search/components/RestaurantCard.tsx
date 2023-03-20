@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link'
 import Price from '../../components/Price';
 import { calculateReview } from '../../../utils/calculateReview';
+import Stars from '../../components/Stars';
 
 interface RestaurantType {
     id: number;
@@ -37,7 +38,8 @@ export default function RestaurantCard({ restaurant }: { restaurant: RestaurantT
             <div className="pl-5">
                 <h2 className="text-3xl">{restaurant.name}</h2>
                 <div className="flex items-start">
-                    <div className="flex mb-2">*****</div>
+                    <Stars reviews={restaurant.reviews} />
+
                     <p className="ml-2 text-sm">{renderRatingText()}</p>
                 </div>
                 <div className="mb-9">
