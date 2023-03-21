@@ -1,9 +1,11 @@
 "use client";
 
+import { useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
 import AuthModalInput from './AuthModalInput';
+import useAuth from '../../hooks/useAuth';
+import { AuthenticationContext } from '../context/AuthContext';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -17,15 +19,32 @@ const style = {
 };
 
 export default function AuthModal({ isSignin }: { isSignin: boolean }) {
+    const { error } = useContext(AuthenticationContext);
     const [open, setOpen] = useState(false);
+    const [disable, setDisable] = useState(true);
     const [inputs, setInputs] = useState({
         firstName: '',
         lastName: '',
-        email: '',
+        email: 'tamy.vivas@email.com',
         phone: '',
         city: '',
-        password: '',
-    })
+        password: 'Tamy.vivas123',
+    });
+    const { signin, signup } = useAuth();
+
+
+    useEffect(() => {
+        if (isSignin) {
+            if (inputs.password && inputs.email) {
+                return setDisable(false);
+            }
+        } else {
+            if (inputs.city && inputs.email && inputs.firstName && inputs.lastName && inputs.password && inputs.phone) {
+                return setDisable(false);
+            }
+        }
+        setDisable(true);
+    }, [inputs]);
 
 
     const handleOpen = () => setOpen(true);
@@ -36,6 +55,12 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
             ...currentSate,
             [e.target.name]: e.target.value
         }))
+    }
+
+    const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isSignin) {
+            signin({ email: inputs.email, password: inputs.password });
+        }
     }
 
     const buttonStyle = isSignin ? 'bg-blue-400 text-white border p-1 px-4 rounded mr-3' : 'border p-1 px-4 rounded';
@@ -70,7 +95,10 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
                                 handleInputChange={handleInputChange}
                                 isSignin={isSignin}
                             />
-                            <button className="uppercase bg-red-600 w-full p-3 text-white rounded text-sm disabled:bg-gray-400">
+                            <button className="uppercase bg-red-600 w-full p-3 text-white rounded text-sm disabled:bg-gray-400"
+                                disabled={disable}
+                                onClick={handleClick}
+                            >
                                 {isSignin ? "Sign In" : "Create Account"}
 
                             </button>

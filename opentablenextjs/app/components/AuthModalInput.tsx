@@ -8,7 +8,7 @@ interface Props {
     password: string;
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  isSignin: string;
+  isSignin: boolean;
 }
 
 export default function AuthModalInput({ inputs, handleInputChange, isSignin }: Props) {
