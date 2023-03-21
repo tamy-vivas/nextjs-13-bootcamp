@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import AuthModalInput from './AuthModalInput';
 import useAuth from '../../hooks/useAuth';
 import { AuthenticationContext } from '../context/AuthContext';
-import { CircularProgress } from '@mui/material';
+import { Alert, CircularProgress } from '@mui/material';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -58,7 +58,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
         }))
     }
 
-    const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleClick = (e: any) => {
         if (isSignin) {
             signin({ email: inputs.email, password: inputs.password });
         }
@@ -80,33 +80,37 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    {loading ? <div className="px-2 py-24 h-[600px] flex justify-center">
-                        <CircularProgress />
-                    </div> : <div className="p-2 h-[600px]">
-                        <div className="uppercase font-bold text-center pb-2 border-b mb-2">
-                            <p className="text-sm">
-                                {isSignin ? "Sign in" : "Create Account"}
-
-                            </p>
+                    {loading ?
+                        <div className="px-2 py-24 h-[600px] flex justify-center">
+                            <CircularProgress />
                         </div>
-                        <div className="m-auto ">
-                            <h2 className="text-2xl font-light text-center">
-                                {isSignin ? "Log Into Your Account" : "Create Your Opentable Account"}
-                            </h2>
-                            <AuthModalInput
-                                inputs={inputs}
-                                handleInputChange={handleInputChange}
-                                isSignin={isSignin}
-                            />
-                            <button className="uppercase bg-red-600 w-full p-3 text-white rounded text-sm disabled:bg-gray-400"
-                                disabled={disable}
-                                onClick={handleClick}
-                            >
-                                {isSignin ? "Sign In" : "Create Account"}
+                        :
+                        <div className="p-2 h-[600px]">
+                            {error && <Alert severity="error" className="mb-4">{error}</Alert>}
+                            <div className="uppercase font-bold text-center pb-2 border-b mb-2">
+                                <p className="text-sm">
+                                    {isSignin ? "Sign in" : "Create Account"}
 
-                            </button>
-                        </div>
-                    </div>}
+                                </p>
+                            </div>
+                            <div className="m-auto ">
+                                <h2 className="text-2xl font-light text-center">
+                                    {isSignin ? "Log Into Your Account" : "Create Your Opentable Account"}
+                                </h2>
+                                <AuthModalInput
+                                    inputs={inputs}
+                                    handleInputChange={handleInputChange}
+                                    isSignin={isSignin}
+                                />
+                                <button className="uppercase bg-red-600 w-full p-3 text-white rounded text-sm disabled:bg-gray-400"
+                                    disabled={disable}
+                                    onClick={handleClick}
+                                >
+                                    {isSignin ? "Sign In" : "Create Account"}
+
+                                </button>
+                            </div>
+                        </div>}
                 </Box>
             </Modal>
         </div>
