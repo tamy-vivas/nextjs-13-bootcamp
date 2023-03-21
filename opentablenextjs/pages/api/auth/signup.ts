@@ -1,12 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import validator from "validator";
+import { PrismaClient } from "@prisma/client";
 
-type Data = {
-  name: string;
-};
+const prisma = new PrismaClient();
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
@@ -55,6 +54,18 @@ export default function handler(
 
     if (errors.length > 0) {
       return res.status(400).json({ errorMessage: errors[0] });
+    }
+
+    const userWithEmail = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (userWithEmail) {
+      return res
+        .status(400)
+        .json({ errorMessage: "Email is associated with another account" });
     }
 
     res.status(200).json({ hello: "body" });
