@@ -8,6 +8,13 @@ interface SigninProps {
   password: string;
 }
 
+interface SignupProps extends SigninProps {
+  firstName: string;
+  lastName: string;
+  city: string;
+  phone: string;
+}
+
 const useAuth = () => {
   const { data, error, loading, setAuthState } = useContext(
     AuthenticationContext
@@ -39,7 +46,39 @@ const useAuth = () => {
     }
   };
 
-  const signup = async () => {};
+  const signup = async (
+    { email, password, firstName, lastName, city, phone }: SignupProps,
+    handleClose: () => void
+  ) => {
+    setAuthState((state) => ({ ...state, loading: true }));
+    try {
+      const values = {
+        email,
+        password,
+        firstName,
+        lastName,
+        city,
+        phone,
+      };
+      const response = await axios.post(`${URL}/api/auth/signup`, {
+        ...values,
+      });
+
+      setAuthState((state) => ({
+        data: response.data,
+        error: null,
+        loading: false,
+      }));
+
+      handleClose();
+    } catch (error: any) {
+      setAuthState((state) => ({
+        data: null,
+        error: error.response.data.errorMessage,
+        loading: false,
+      }));
+    }
+  };
 
   return {
     signin,
