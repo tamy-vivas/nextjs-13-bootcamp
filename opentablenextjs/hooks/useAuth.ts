@@ -12,7 +12,10 @@ const useAuth = () => {
   const { data, error, loading, setAuthState } = useContext(
     AuthenticationContext
   );
-  const signin = async ({ email, password }: SigninProps) => {
+  const signin = async (
+    { email, password }: SigninProps,
+    handleClose: () => void
+  ) => {
     setAuthState((state) => ({ ...state, loading: true }));
     try {
       const response = await axios.post(`${URL}/api/auth/signin`, {
@@ -25,6 +28,7 @@ const useAuth = () => {
         error: null,
         loading: false,
       }));
+      handleClose();
     } catch (error: any) {
       console.log(error);
       setAuthState((state) => ({
