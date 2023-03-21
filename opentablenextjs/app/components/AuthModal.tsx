@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import AuthModalInput from './AuthModalInput';
 import useAuth from '../../hooks/useAuth';
 import { AuthenticationContext } from '../context/AuthContext';
+import { CircularProgress } from '@mui/material';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -19,7 +20,6 @@ const style = {
 };
 
 export default function AuthModal({ isSignin }: { isSignin: boolean }) {
-    const { error } = useContext(AuthenticationContext);
     const [open, setOpen] = useState(false);
     const [disable, setDisable] = useState(true);
     const [inputs, setInputs] = useState({
@@ -31,6 +31,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
         password: 'Tamy.vivas123',
     });
     const { signin, signup } = useAuth();
+    const { data, error, loading } = useContext(AuthenticationContext);
 
 
     useEffect(() => {
@@ -79,7 +80,9 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <div className="p-2 h-[600px]">
+                    {loading ? <div className="px-2 py-24 h-[600px] flex justify-center">
+                        <CircularProgress />
+                    </div> : <div className="p-2 h-[600px]">
                         <div className="uppercase font-bold text-center pb-2 border-b mb-2">
                             <p className="text-sm">
                                 {isSignin ? "Sign in" : "Create Account"}
@@ -103,7 +106,7 @@ export default function AuthModal({ isSignin }: { isSignin: boolean }) {
 
                             </button>
                         </div>
-                    </div>
+                    </div>}
                 </Box>
             </Modal>
         </div>
