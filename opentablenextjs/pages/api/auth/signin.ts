@@ -12,39 +12,17 @@ export default async function handler(
   res: NextApiResponse<any>
 ) {
   if (req.method === "POST") {
-    const { firstName, lastName, email, phone, city, password } = req.body;
+    const { email, password } = req.body;
     const errors: string[] = [];
 
     const validationSchema = [
       {
-        valid: validator.isLength(firstName, {
-          min: 1,
-          max: 20,
-        }),
-        errorMessage: "First name is Invalid!",
-      },
-      {
-        valid: validator.isLength(lastName, {
-          min: 1,
-          max: 20,
-        }),
-        errorMessage: "Last name is Invalid!",
-      },
-      {
         valid: validator.isEmail(email),
-        errorMessage: "Email is Invalid!",
+        errorMessage: "Email is invalid",
       },
       {
-        valid: validator.isMobilePhone(phone),
-        errorMessage: "Phone is Invalid!",
-      },
-      {
-        valid: validator.isLength(city, { min: 1 }),
-        errorMessage: "City is Invalid!",
-      },
-      {
-        valid: validator.isStrongPassword(password),
-        errorMessage: "Password is not strong enough!",
+        valid: validator.isLength(password, { min: 1 }),
+        errorMessage: "Password is invalid",
       },
     ];
 
@@ -58,29 +36,25 @@ export default async function handler(
       return res.status(400).json({ errorMessage: errors[0] });
     }
 
-    const userWithEmail = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    if (userWithEmail) {
+    if (!user) {
       return res
-        .status(400)
-        .json({ errorMessage: "Email is associated with another account" });
+        .status(401)
+        .json({ errorMessage: "Email or password is invalid" });
     }
 
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-        password: hashedPassword,
-        phone,
-        city,
-        email,
-      },
-    });
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ errorMessage: "Email or password is invalid" });
+    }
 
     const alg = "HS256";
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
