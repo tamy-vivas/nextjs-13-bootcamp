@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { findAvailableTables } from "../../../../services/restaurant/findAvailableTables";
 
 const prisma = new PrismaClient();
 
@@ -22,6 +23,7 @@ export default async function handler(
     select: {
       open_time: true,
       close_time: true,
+      tables: true,
     },
   });
 
@@ -35,10 +37,31 @@ export default async function handler(
   ) {
     return res
       .status(400)
-      .json({ errorMessage: "Restaruant is not open at that time" });
+      .json({ errorMessage: "Restaurant is not open at that time" });
   }
 
-  res.status(200).json({ slug, day, time, partySize });
+  const searchTimesWithTables = await findAvailableTables({
+    day,
+    time,
+    res,
+    restaurant,
+  });
+
+  if (!searchTimesWithTables) {
+    return res.status(400).json({ errorMessage: "Invalid data provided" });
+  }
+
+  const searchTimesWithTable = searchTimesWithTables.find((t) => {
+    return t.date.toISOString() === new Date(`${day}T${time}`).toISOString();
+  });
+
+  if (!searchTimesWithTable) {
+    return res
+      .status(400)
+      .json({ errorMessage: "No availability, cannot book" });
+  }
+
+  return res.status(200).json({ searchTimesWithTable });
 }
 
-//http://localhost:3000/api/restaurant/vivaan-fine-indian-cuisine-ottawa/reserve?day=2023-02-03&time=14:00:00.000Z&partySize=2
+//http://localhost:3000/api/restaurant/vivaan-fine-indian-cuisine-ottawa/reserve?day=2023-03-22&time=14:30:00.000Z&partySize=2
