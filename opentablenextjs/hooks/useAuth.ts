@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCookie } from "cookies-next";
 import { useContext } from "react";
 import { AuthenticationContext } from "../app/context/AuthContext";
 const URL = "http://localhost:3000";
@@ -64,25 +65,26 @@ const useAuth = () => {
         ...values,
       });
 
-      setAuthState((state) => ({
+      setAuthState({
         data: response.data,
         error: null,
         loading: false,
-      }));
+      });
 
       handleClose();
     } catch (error: any) {
-      setAuthState((state) => ({
+      setAuthState({
         data: null,
         error: error.response.data.errorMessage,
         loading: false,
-      }));
+      });
     }
   };
 
   return {
     signin,
     signup,
+    //fetchUser,
   };
 };
 
