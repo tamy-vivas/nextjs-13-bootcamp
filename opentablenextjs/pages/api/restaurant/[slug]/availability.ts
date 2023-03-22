@@ -80,14 +80,17 @@ export default async function handler(
       return true;
     });
   });
+
+  const availabilities = searchTimesWithTables.map((t) => {
+    const sumSeats = t.tables.reduce((sum, table) => {
+      return sum + table.seats;
+    }, 0);
+    return { time: t.time, available: sumSeats >= parseInt(partySize) };
+  });
   //vivaan-fine-indian-cuisine-ottawa
 
   res.status(200).json({
-    searchTimes,
-    bookings,
-    bookingTablesObj,
-    tables,
-    searchTimesWithTables,
+    availabilities,
   });
 }
 
