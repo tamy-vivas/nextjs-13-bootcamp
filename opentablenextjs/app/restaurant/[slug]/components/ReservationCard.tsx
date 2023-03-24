@@ -1,6 +1,6 @@
 "use client";
 import DatePicker from 'react-datepicker';
-import { useState } from 'react';
+import { useState, useId } from 'react';
 
 import { partySize as partySizes, times } from '../../../../data/index';
 import useAvailabilities from '../../../../hooks/useAvailabilities';
@@ -14,7 +14,8 @@ export default function ReservationCard({ openTime, closeTime, slug }: { openTim
     const { loading, data, error, fetchAvailabilities } = useAvailabilities();
     const [time, setTime] = useState(openTime);
     const [partySize, setPartySize] = useState('2');
-    const [day, setDay] = useState(new Date().toISOString().split('T')[0])
+    const [day, setDay] = useState(new Date().toISOString().split('T')[0]);
+    const newId = useId();
 
     const handleChangeDate = (date: Date | null) => {
         if (date) {
@@ -102,13 +103,13 @@ export default function ReservationCard({ openTime, closeTime, slug }: { openTim
                     <div className="flex flex-wrap mt-2">
                         {data.map((time, index) => {
                             return time.available ?
-                                <Link key={index} href={`/reserve/${slug}?data=${day}T${time}&partySize=${partySize}`}
+                                <Link key={newId} href={`/reserve/${slug}?date=${day}T${time.time}&partySize=${partySize}`}
                                     className="bg-red-600 cursor-pointer p-2 w-24 text-center text-white mb-3 rounded mr-3">
                                     <p className="text-sm font-bold">
                                         {convertToDisplayTime(time.time)}
                                     </p>
                                 </Link> :
-                                <p key={index} className="bg-gray-300 p-2 w-24 mb-3 rounded mr-3"></p>
+                                <p key={newId} className="bg-gray-300 p-2 w-24 mb-3 rounded mr-3"></p>
                         })}
                     </div>
                 </div>

@@ -20,7 +20,6 @@ export default function RestaurantCard({ restaurant }: Props) {
                     alt=""
                     width="254"
                     height="144"
-                    className="w-full h-36"
                 />
                 <div className="p-1">
                     <h3 className="font-bold text-2xl mb-2">{restaurant.name}</h3>

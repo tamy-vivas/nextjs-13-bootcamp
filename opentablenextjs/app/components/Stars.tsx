@@ -4,9 +4,11 @@ import emptyStar from '../../public/icons/empty-star.png';
 import Image from 'next/image';
 import { Review } from '@prisma/client';
 import { calculateReview } from '../../utils/calculateReview';
+import { useId } from 'react';
 
 export default function Stars({ reviews, rating }: { reviews: Review[], rating?: number }) {
     const r = rating || calculateReview(reviews);
+    const newId = useId();
 
     const renderStars = () => {
         const stars = [];
@@ -19,7 +21,7 @@ export default function Stars({ reviews, rating }: { reviews: Review[], rating?:
                 else stars.push(fullStar);
             } else stars.push(emptyStar);
         }
-        return stars.map((star, index) => (<Image key={index} src={star} alt="" className="w-4 h-4 mr-1" />))
+        return stars.map((star, index) => (<Image key={newId} src={star} alt="" className="w-4 h-4 mr-1" />))
     }
     return (
         <div className="flex items-center">{renderStars()}</div>
